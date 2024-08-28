@@ -2,6 +2,8 @@ import React from "react";
 import signupImage from "./assets/sigup.png"; // Corrected the typo in the file name
 import { FaGooglePlusG } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { BsMicrosoft } from "react-icons/bs";
+import { FaMeta } from "react-icons/fa6";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ function SignUp() {
       {/* Outer wrapper to center the content vertically and horizontally */}
       <div className="m-[5vw] w-[90vw] max-w-[1200px] flex justify-center items-center border-2 p-[2vw] rounded-3xl bg-white shadow-lg transition-all duration-500 ease-in-out transform">
         {/* Image section */}
-        <div className="hidden md:block w-1/2 p-5">
+        <div className="hidden md:block w-1/2 p-2">
           <img
             src={signupImage}
             alt="Sign Up Page"
@@ -26,28 +28,28 @@ function SignUp() {
             <input
               type="text"
               placeholder="First Name"
-              className="w-1/2 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+              className="w-1/2 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
             />
             <input
               type="text"
               placeholder="Last Name"
-              className="w-1/2 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+              className="w-1/2 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
             />
           </div>
           <input
             type="email"
             placeholder="Email"
-            className="w-full md:w-3/4 mt-4 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+            className="w-full md:w-3/4 mt-4 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
           />
           <input
             type="password"
             placeholder="Password"
-            className="w-full md:w-3/4 mt-4 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+            className="w-full md:w-3/4 mt-4 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
           />
           <input
             type="tel"
             placeholder="Mobile Number"
-            className="w-full md:w-3/4 mt-4 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+            className="w-full md:w-3/4 mt-4 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
           />
           <div className="w-full md:w-3/4 mt-4">
             <label className="block mb-2 text-gray-600">Upload ID Card:</label>
@@ -57,13 +59,13 @@ function SignUp() {
             />
           </div>
           <button
-            onClick={() => alert("Account created successfully!")}
+            onClick={() => navigate("/")}
             type="button"
             className="w-full md:w-3/4 mt-6 p-4 rounded-lg bg-purple-500 hover:bg-purple-600 transition-all duration-300 transform hover:scale-105 text-white font-bold"
           >
             Sign Up
           </button>
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-start">
             Already have an account?{' '}
             <button
               onClick={() => navigate("/Login")}
@@ -72,15 +74,16 @@ function SignUp() {
               Sign in
             </button>
           </div>
-          <div className="flex justify-center gap-5 mt-8">
+          {/* Centering the Google logos */}
+          <div className="flex justify-center gap-8 md:w-3/4 mt-5 ">
             <button className="bg-white p-4 rounded-full transition-transform duration-500 hover:scale-110 shadow-lg hover:shadow-2xl">
               <FaGooglePlusG className="text-3xl text-red-500" />
             </button>
             <button className="bg-white p-4 rounded-full transition-transform duration-500 hover:scale-110 shadow-lg hover:shadow-2xl">
-              <FaGooglePlusG className="text-3xl text-blue-500" />
+              <FaMeta className="text-3xl text-blue-500" />
             </button>
             <button className="bg-white p-4 rounded-full transition-transform duration-500 hover:scale-110 shadow-lg hover:shadow-2xl">
-              <FaGooglePlusG className="text-3xl text-green-500" />
+              <BsMicrosoft className="text-3xl text-green-500" />
             </button>
           </div>
         </div>
