@@ -1,5 +1,5 @@
 import React from "react";
-import signupImage from "./assets/sigup.png"; // Corrected the typo in the file name
+import signupImage from "./assets/signup.png"; // Corrected the typo in the file name
 import { FaGooglePlusG } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { BsMicrosoft } from "react-icons/bs";
