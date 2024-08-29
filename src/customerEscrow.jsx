@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -7,19 +7,25 @@ import {
   Unlock,
   AlertTriangle,
   ExternalLink,
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CustomerEscrowInterface = () => {
+  const [walletAddress, setWalletAddress] = useState("");
   const [balance, setBalance] = useState(0);
-  const [status, setStatus] = useState('LOCKED');
-  const [amount, setAmount] = useState('');
-  const [releaseAmount, setReleaseAmount] = useState('');
+  const [status, setStatus] = useState("LOCKED");
+  const [amount, setAmount] = useState("");
+  const [releaseAmount, setReleaseAmount] = useState("");
   const [conflictRaised, setConflictRaised] = useState(false);
   const [resolutionProgress, setResolutionProgress] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getCurrentWalletConnected();
+    addWalletListener();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,12 +37,54 @@ const CustomerEscrowInterface = () => {
     return () => clearInterval(timer);
   }, [conflictRaised, resolutionProgress]);
 
+  const connectWallet = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setWalletAddress(accounts[0]);
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const getCurrentWalletConnected = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const addWalletListener = () => {
+    if (typeof window.ethereum !== "undefined") {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        setWalletAddress(accounts[0]);
+      });
+    }
+  };
+
   const handleDeposit = () => {
     if (amount && !isNaN(amount)) {
       const depositAmount = parseFloat(amount);
       setBalance((prevBalance) => prevBalance + depositAmount);
-      setAmount('');
-      addTransaction('Deposit', depositAmount);
+      setAmount("");
+      addTransaction("Deposit", depositAmount);
     }
   };
 
@@ -45,27 +93,27 @@ const CustomerEscrowInterface = () => {
       const releaseAmountValue = parseFloat(releaseAmount);
       if (releaseAmountValue <= balance) {
         setBalance((prevBalance) => prevBalance - releaseAmountValue);
-        setReleaseAmount('');
-        setStatus('RELEASED');
-        addTransaction('Funds Released', releaseAmountValue);
+        setReleaseAmount("");
+        setStatus("RELEASED");
+        addTransaction("Funds Released", releaseAmountValue);
       } else {
-        alert('Insufficient balance to release the specified amount.');
+        alert("Insufficient balance to release the specified amount.");
       }
     }
   };
 
   const handleRaiseConflict = () => {
     setConflictRaised(true);
-    setStatus('DISPUTED');
-    addTransaction('Conflict Raised', 0);
+    setStatus("DISPUTED");
+    addTransaction("Conflict Raised", 0);
     setShowConflictDialog(false);
   };
 
   const handleResolveConflict = () => {
     setConflictRaised(false);
-    setStatus('RESOLVED');
+    setStatus("RESOLVED");
     setResolutionProgress(0);
-    addTransaction('Conflict Resolved', 0);
+    addTransaction("Conflict Resolved", 0);
   };
 
   const addTransaction = (type, amount) => {
@@ -92,15 +140,21 @@ const CustomerEscrowInterface = () => {
         <div className="flex items-center justify-between">
           <span className="text-lg font-semibold">Status:</span>
           <div className="flex items-center">
-            {status === 'LOCKED' && <Lock className="mr-2 text-yellow-500" />}
-            {status === 'RELEASED' && <Unlock className="mr-2 text-green-500" />}
-            {status === 'DISPUTED' && <AlertTriangle className="mr-2 text-red-500" />}
-            {status === 'RESOLVED' && <CheckCircle2 className="mr-2 text-blue-500" />}
-            <span className={`font-bold ${
-              status === 'LOCKED' ? 'text-yellow-500' :
-              status === 'RELEASED' ? 'text-green-500' :
-              status === 'DISPUTED' ? 'text-red-500' : 'text-blue-500'
-            }`}>
+            {status === "LOCKED" && <Lock className="mr-2 text-yellow-500" />}
+            {status === "RELEASED" && <Unlock className="mr-2 text-green-500" />}
+            {status === "DISPUTED" && <AlertTriangle className="mr-2 text-red-500" />}
+            {status === "RESOLVED" && <CheckCircle2 className="mr-2 text-blue-500" />}
+            <span
+              className={`font-bold ${
+                status === "LOCKED"
+                  ? "text-yellow-500"
+                  : status === "RELEASED"
+                  ? "text-green-500"
+                  : status === "DISPUTED"
+                  ? "text-red-500"
+                  : "text-blue-500"
+              }`}
+            >
               {status}
             </span>
           </div>
@@ -134,7 +188,7 @@ const CustomerEscrowInterface = () => {
           <button
             onClick={handleRelease}
             className="bg-blue-500 text-white px-4 py-2 rounded-r-lg disabled:opacity-50"
-            disabled={status !== 'LOCKED'}
+            disabled={status !== "LOCKED"}
           >
             <Unlock className="mr-2 inline" size={16} />
             Release Funds
@@ -144,7 +198,7 @@ const CustomerEscrowInterface = () => {
         <button
           onClick={() => setShowConflictDialog(true)}
           className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50 mt-4"
-          disabled={conflictRaised || status === 'RESOLVED'}
+          disabled={conflictRaised || status === "RESOLVED"}
         >
           <AlertTriangle className="mr-2 inline" size={16} />
           Raise Conflict
@@ -185,49 +239,55 @@ const CustomerEscrowInterface = () => {
               <div
                 className="bg-blue-600 h-2.5 rounded-full"
                 style={{ width: `${resolutionProgress}%` }}
-              ></div>
+              />
             </div>
             <p className="mt-2 text-sm text-gray-600">
               {resolutionProgress}% Complete
             </p>
             {resolutionProgress === 100 && (
-              <button
-                onClick={handleResolveConflict}
-                className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-              >
-                Resolve Conflict
-              </button>
+              <div className="mt-4">
+                <p className="font-semibold text-green-600">
+                  Conflict resolved! Funds have been unlocked.
+                </p>
+                <button
+                  onClick={handleResolveConflict}
+                  className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                >
+                  Resolve Conflict
+                </button>
+              </div>
             )}
           </div>
         )}
 
+        <div className="mt-6">
+          <h3 className="text-lg font-bold mb-2">Transaction History:</h3>
+          {transactionHistory.length === 0 ? (
+            <p>No transactions yet.</p>
+          ) : (
+            <ul className="space-y-2">
+              {transactionHistory.map((transaction) => (
+                <li
+                  key={transaction.id}
+                  className="flex justify-between items-center bg-gray-100 p-2 rounded"
+                >
+                  <span>{transaction.date}</span>
+                  <span className="font-semibold">
+                    {transaction.type} - ${transaction.amount.toFixed(2)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <button
-          className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded mt-4"
-          onClick={() => navigate('/resolution-center')}
+          onClick={() => navigate("/")}
+          className="mt-6 bg-gray-800 text-white px-4 py-2 rounded"
         >
           <ExternalLink className="mr-2 inline" size={16} />
-          Visit Resolution Center
+          Back to Dashboard
         </button>
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Transaction History</h3>
-          <div className="max-h-40 overflow-y-auto">
-            {transactionHistory.map((transaction) => (
-              <div key={transaction.id} className="flex justify-between items-center py-2 border-b">
-                <span>{transaction.type}</span>
-                <span>${transaction.amount.toFixed(2)}</span>
-                <span className="text-sm text-gray-500">{transaction.date}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 p-3 bg-blue-100 rounded-md flex items-start">
-          <AlertCircle className="text-blue-500 mr-2 flex-shrink-0" size={20} />
-          <p className="text-sm text-blue-700">
-            This is a demo interface for customers. In a real escrow system, actions would be subject to strict verification processes and legal considerations.
-          </p>
-        </div>
       </div>
     </div>
   );
