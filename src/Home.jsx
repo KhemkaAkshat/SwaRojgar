@@ -15,6 +15,7 @@ import { FaShower, FaStar } from "react-icons/fa";
 import { SiMarketo } from "react-icons/si";
 import { IoIosLink, IoMdStar } from "react-icons/io";
 import { posts } from "./posts";
+import { courses } from "./courses";
 
 function Home() {
   return (
@@ -215,7 +216,8 @@ function Home() {
                 </div>
                 <div className="bottom flex  justify-around items-center gap-5 mb-2">
                   <div className="w-[20vw] text-lg font-medium font-body ">
-                    Starts from <span className="font-semibold">{post.price}</span>
+                    Starts from{" "}
+                    <span className="font-semibold">{post.price}</span>
                   </div>
                   <button className="bg-green-900 font-semibold p-3 px-5  text-white rounded-xl">
                     Apply
@@ -227,8 +229,27 @@ function Home() {
         </div>
         {/* rightbar opening  */}
         <div className="rightbar w-1/3 border-2">
-          <div className="courses">
-            Courses
+          <div className="courses flex flex-wrap">
+            {courses.map((course, index) => {
+              return (
+                <div className=" w-1/2 p-5">
+                <div className="mb-5 bg-white rounded shadow-lg ">
+                  <iframe
+                  className="rounded-xl"
+                    width="100%"
+                    height="200"
+                    src={`https://www.youtube.com/embed/${course.videoId}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  ></iframe>
+                  </div> 
+                  <div className="font-bold pb-5 p-2">{course.name}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
