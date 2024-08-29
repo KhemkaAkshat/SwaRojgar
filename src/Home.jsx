@@ -48,6 +48,7 @@ function Home() {
           </button>
         </div>
       </div>
+      <hr className="mt-5" />
       {/* Navbar Closing  */}
 
       {/* dashboard opening  */}
@@ -228,24 +229,25 @@ function Home() {
           })}
         </div>
         {/* rightbar opening  */}
-        <div className="rightbar w-1/3 border-2">
+        <div className="rightbar w-1/3 h-1/2 rounded-xl shadow-xl">
+          <h1 className="font-bold text-3xl p-5">Upskill Yourself</h1>
           <div className="courses flex flex-wrap">
             {courses.map((course, index) => {
               return (
                 <div className=" w-1/2 p-5">
-                <div className="mb-5 bg-white rounded shadow-lg ">
-                  <iframe
-                  className="rounded-xl"
-                    width="100%"
-                    height="200"
-                    src={`https://www.youtube.com/embed/${course.videoId}`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  ></iframe>
-                  </div> 
+                  <div className="mb-5 bg-white rounded shadow-lg ">
+                    <iframe
+                      className="rounded-xl"
+                      width="100%"
+                      height="200"
+                      src={`https://www.youtube.com/embed/${course.videoId}`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
                   <div className="font-bold pb-5 p-2">{course.name}</div>
                 </div>
               );
