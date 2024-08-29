@@ -178,7 +178,7 @@ function Home() {
             </div>
           </div>
         </div>
-        {/* Postebar opening  */}
+        {/* Postbar opening  */}
         <div className="postbar w-1/3">
           <div className="flex gap-5">
             <button className="text-center pb-1 h-16 w-16 flex justify-center items-center rounded-full font-semibold text-3xl text-white bg-purple-400 hover:bg-purple-600 transition-all ease">
@@ -226,7 +226,11 @@ function Home() {
           })}
         </div>
         {/* rightbar opening  */}
-        <div className="rightbar w-1/3">rightbar</div>
+        <div className="rightbar w-1/3 border-2">
+          <div className="courses">
+            Courses
+          </div>
+        </div>
       </div>
     </>
   );
