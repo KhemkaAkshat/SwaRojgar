@@ -2,16 +2,16 @@ export const trendingGigs=[
     {
         id:1,
         name:'Video Editing',
-        tag:'MdOutlineOndemandVideo'
+        tagName:'MdOutlineOndemandVideo'
     },
     {
         id:2,
         name:'Graphic Design',
-        tag:'MdOutlineDesignServices'
+        tagName:'MdOutlineDesignServices'
     },
     {
         id:3,
         name:'Web Dev',
-        tag:'CgWebsite'
+        tagName:'CgWebsite'
     },
 ];

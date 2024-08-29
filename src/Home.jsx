@@ -1,7 +1,7 @@
 import React from "react";
 import mainImage from "./assets/main.png";
 import logo from "./assets/logo.png";
-import { IoSearch } from "react-icons/io5";
+import { IoCameraOutline, IoSearch } from "react-icons/io5";
 import {
   MdDesignServices,
   MdOutlineDesignServices,
@@ -13,7 +13,8 @@ import { PiCookingPot } from "react-icons/pi";
 import { RiSteering2Fill } from "react-icons/ri";
 import { FaShower, FaStar } from "react-icons/fa";
 import { SiMarketo } from "react-icons/si";
-import { IoMdStar } from "react-icons/io";
+import { IoIosLink, IoMdStar } from "react-icons/io";
+import { posts } from "./posts";
 
 function Home() {
   return (
@@ -51,7 +52,7 @@ function Home() {
       {/* dashboard opening  */}
       <div className="flex justify-around mt-[3vw] p-5 gap-5">
         {/* Leftbar opening  */}
-        <div className="leftbar w-1/3 border-2 p-5 ">
+        <div className="leftbar w-1/3 p-5 ">
           <h2 className="text-xl font-bold mb-2 flex animate-pulse">
             Trending Gigs
             <IoMdStar className="m-1 text-yellow-500 animate-pulse" />
@@ -65,6 +66,7 @@ function Home() {
                   background: `radial-gradient(circle at center, rgba(128, 0, 128, 0.2) 0%, transparent 60%)`,
                 }}
               ></div>
+
               <MdOutlineOndemandVideo className="text-4xl ml-2 mt-3 mb-6 text-gray-700 transition-colors duration-300 relative z-10" />
               <h4 className="font-semibold mb-1 text-gray-800 transition-colors duration-300 relative z-10">
                 Video Editing
@@ -178,20 +180,50 @@ function Home() {
         </div>
         {/* Postebar opening  */}
         <div className="postbar w-1/3">
-          <div>Add new post</div>
-          <div className="Profile flex gap-4">
-            <img src="pp" alt="" />
-            <p>Name</p>
-          </div>
-          <div className="posts">
-            <img src="Post" alt="" />
-          </div>
-          <div className="bottom flex gap-5">
-            <div className="w-[15vw]">
-              2000Rs.
+          <div className="flex gap-5">
+            <button className="text-center pb-1 h-16 w-16 flex justify-center items-center rounded-full font-semibold text-3xl text-white bg-purple-400 hover:bg-purple-600 transition-all ease">
+              +
+            </button>
+
+            {/* Wrapper div for input and icon */}
+            <div className="relative w-3/4">
+              <input
+                type="text"
+                placeholder="Add a new post"
+                className="rounded-3xl drop-shadow-md p-5 w-full pr-10"
+              />
+
+              <IoCameraOutline className="absolute right-[4vw] top-1/3 -transform tranlate-y-1/2 text-gray-500 text-2xl hover:cursor-pointer hover:text-gray-800 transition-all ease" />
+              <IoIosLink className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl hover:cursor-pointer hover:text-gray-800 transition-all ease" />
             </div>
-            <button>Apply</button>
           </div>
+
+          {/* posts  */}
+          {posts.map((post, index) => {
+            return (
+              <div className="border-2 mt-8 rounded-md">
+                <div className="Profile flex gap-4 items-center p-2 ">
+                  <img
+                    src={post.pp}
+                    alt=""
+                    className="rounded-full w-12 h-12 border-2 "
+                  />
+                  <p className="font-bold text-lg">{post.name}</p>
+                </div>
+                <div className="posts p-5">
+                  <img src={post.cover} alt="" className="rouned-md" />
+                </div>
+                <div className="bottom flex  justify-around items-center gap-5 mb-2">
+                  <div className="w-[20vw] text-lg font-medium font-body ">
+                    Starts from <span className="font-semibold">{post.price}</span>
+                  </div>
+                  <button className="bg-green-900 font-semibold p-3 px-5  text-white rounded-xl">
+                    Apply
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
         {/* rightbar opening  */}
         <div className="rightbar w-1/3">rightbar</div>
