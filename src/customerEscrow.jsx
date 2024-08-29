@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   AlertCircle,
   CheckCircle2,
+  CreditCard,
   Lock,
   Unlock,
   AlertTriangle,
@@ -9,9 +10,11 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const WorkerEscrowInterface = () => {
+const CustomerEscrowInterface = () => {
   const [balance, setBalance] = useState(0);
   const [status, setStatus] = useState('LOCKED');
+  const [amount, setAmount] = useState('');
+  const [releaseAmount, setReleaseAmount] = useState('');
   const [conflictRaised, setConflictRaised] = useState(false);
   const [resolutionProgress, setResolutionProgress] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
@@ -27,6 +30,29 @@ const WorkerEscrowInterface = () => {
 
     return () => clearInterval(timer);
   }, [conflictRaised, resolutionProgress]);
+
+  const handleDeposit = () => {
+    if (amount && !isNaN(amount)) {
+      const depositAmount = parseFloat(amount);
+      setBalance((prevBalance) => prevBalance + depositAmount);
+      setAmount('');
+      addTransaction('Deposit', depositAmount);
+    }
+  };
+
+  const handleRelease = () => {
+    if (releaseAmount && !isNaN(releaseAmount)) {
+      const releaseAmountValue = parseFloat(releaseAmount);
+      if (releaseAmountValue <= balance) {
+        setBalance((prevBalance) => prevBalance - releaseAmountValue);
+        setReleaseAmount('');
+        setStatus('RELEASED');
+        addTransaction('Funds Released', releaseAmountValue);
+      } else {
+        alert('Insufficient balance to release the specified amount.');
+      }
+    }
+  };
 
   const handleRaiseConflict = () => {
     setConflictRaised(true);
@@ -55,7 +81,7 @@ const WorkerEscrowInterface = () => {
   return (
     <div className="p-4 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
       <div className="text-2xl font-bold text-center mb-6">
-        Worker Escrow Interface
+        Customer Escrow Interface
       </div>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -70,21 +96,54 @@ const WorkerEscrowInterface = () => {
             {status === 'RELEASED' && <Unlock className="mr-2 text-green-500" />}
             {status === 'DISPUTED' && <AlertTriangle className="mr-2 text-red-500" />}
             {status === 'RESOLVED' && <CheckCircle2 className="mr-2 text-blue-500" />}
-            <span
-              className={`font-bold ${
-                status === 'LOCKED' ? 'text-yellow-500' :
-                status === 'RELEASED' ? 'text-green-500' :
-                status === 'DISPUTED' ? 'text-red-500' : 'text-blue-500'
-              }`}
-            >
+            <span className={`font-bold ${
+              status === 'LOCKED' ? 'text-yellow-500' :
+              status === 'RELEASED' ? 'text-green-500' :
+              status === 'DISPUTED' ? 'text-red-500' : 'text-blue-500'
+            }`}>
               {status}
             </span>
           </div>
         </div>
 
+        <div className="flex">
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount"
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none"
+          />
+          <button
+            onClick={handleDeposit}
+            className="bg-green-500 text-white px-4 py-2 rounded-r-lg"
+          >
+            <CreditCard className="mr-2 inline" size={16} />
+            Deposit
+          </button>
+        </div>
+
+        <div className="flex mt-4">
+          <input
+            type="number"
+            value={releaseAmount}
+            onChange={(e) => setReleaseAmount(e.target.value)}
+            placeholder="Enter amount to release"
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none"
+          />
+          <button
+            onClick={handleRelease}
+            className="bg-blue-500 text-white px-4 py-2 rounded-r-lg disabled:opacity-50"
+            disabled={status !== 'LOCKED'}
+          >
+            <Unlock className="mr-2 inline" size={16} />
+            Release Funds
+          </button>
+        </div>
+
         <button
           onClick={() => setShowConflictDialog(true)}
-          className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50 mt-4"
           disabled={conflictRaised || status === 'RESOLVED'}
         >
           <AlertTriangle className="mr-2 inline" size={16} />
@@ -125,7 +184,7 @@ const WorkerEscrowInterface = () => {
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div
                 className="bg-blue-600 h-2.5 rounded-full"
-                style={{ width: `${resolutionProgress}%` }} // Corrected interpolation
+                style={{ width: `${resolutionProgress}%` }}
               ></div>
             </div>
             <p className="mt-2 text-sm text-gray-600">
@@ -143,8 +202,8 @@ const WorkerEscrowInterface = () => {
         )}
 
         <button
-          className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
-          onClick={() => navigate('/resolution-center')} // Updated to use navigate
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded mt-4"
+          onClick={() => navigate('/resolution-center')}
         >
           <ExternalLink className="mr-2 inline" size={16} />
           Visit Resolution Center
@@ -166,7 +225,7 @@ const WorkerEscrowInterface = () => {
         <div className="mt-4 p-3 bg-blue-100 rounded-md flex items-start">
           <AlertCircle className="text-blue-500 mr-2 flex-shrink-0" size={20} />
           <p className="text-sm text-blue-700">
-            This is a demo interface for workers. In a real escrow system, actions would be subject to strict verification processes and legal considerations.
+            This is a demo interface for customers. In a real escrow system, actions would be subject to strict verification processes and legal considerations.
           </p>
         </div>
       </div>
@@ -174,4 +233,4 @@ const WorkerEscrowInterface = () => {
   );
 };
 
-export default WorkerEscrowInterface;
+export default CustomerEscrowInterface;
