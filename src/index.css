@@ -3,3 +3,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Corrected the universal selector to not use quotes for the color */
+body {
+    background-color: #ebf8ff; /* No quotes around color */
+    font-family: 'Poppins', sans-serif; /* Applying the imported font globally */
+}

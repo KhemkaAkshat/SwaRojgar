@@ -1,5 +1,4 @@
 import React from "react";
-import mainImage from "./assets/main.png";
 import logo from "./assets/logo.png";
 import { IoCameraOutline, IoSearch } from "react-icons/io5";
 import {
@@ -7,11 +6,10 @@ import {
   MdOutlineDesignServices,
   MdOutlineOndemandVideo,
 } from "react-icons/md";
-import { trendingGigs } from "./gigs";
 import { CgWebsite } from "react-icons/cg";
 import { PiCookingPot } from "react-icons/pi";
 import { RiSteering2Fill } from "react-icons/ri";
-import { FaShower, FaStar } from "react-icons/fa";
+import { FaShower } from "react-icons/fa";
 import { SiMarketo } from "react-icons/si";
 import { IoIosLink, IoMdStar } from "react-icons/io";
 import { posts } from "./posts";
@@ -52,16 +50,16 @@ function Home() {
       {/* Navbar Closing  */}
 
       {/* dashboard opening  */}
-      <div className="flex justify-around mt-[3vw] p-5 gap-5">
+      <div className="flex justify-around mt-[3vw] p-2">
         {/* Leftbar opening  */}
-        <div className="leftbar w-1/3 p-5 ">
+        <div className="leftbar w-1/4 p-5 border-2 rounded-xl drop-shadow-md bg-white h-1/2">
           <h2 className="text-xl font-bold mb-2 flex animate-pulse">
             Trending Gigs
             <IoMdStar className="m-1 text-yellow-500 animate-pulse" />
           </h2>
 
-          <div className="flex p-3 pt-4 pb-4 justify-around gap-1 bg-emerald-900 rounded-2xl">
-            <div className="w-[8vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
+          <div className="flex p-2  justify-around gap-2 bg-emerald-900 rounded-2xl">
+            <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
               <div
                 className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
@@ -74,7 +72,7 @@ function Home() {
                 Video Editing
               </h4>
             </div>
-            <div className="w-[8vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
+            <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
               <div
                 className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
@@ -86,7 +84,7 @@ function Home() {
                 Graphic Design
               </h4>
             </div>
-            <div className="w-[8vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
+            <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
               <div
                 className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
@@ -181,21 +179,21 @@ function Home() {
           </div>
         </div>
         {/* Postbar opening  */}
-        <div className="postbar w-1/3">
-          <div className="flex gap-5">
-            <button className="text-center pb-1 h-16 w-16 flex justify-center items-center rounded-full font-semibold text-3xl text-white bg-purple-400 hover:bg-purple-600 transition-all ease">
+        <div className="postbar w-2/5">
+          <div className="flex gap-3 justify-center items-center">
+            <button className="text-center h-12 w-12 flex justify-center items-center rounded-full font-semibold text-3xl text-white bg-purple-400 hover:bg-purple-600 transition-all ease">
               +
             </button>
 
             {/* Wrapper div for input and icon */}
             <div className="relative w-3/4">
-              <input
-                type="text"
-                placeholder="Add a new post"
-                className="rounded-3xl drop-shadow-md p-5 w-full pr-10"
-              />
+            <input
+  type="text"
+  placeholder="Add a new post"
+  className="rounded-3xl drop-shadow-md p-3 w-full pr-10 text-sm border  focus:border-purple-500 focus:outline-none"
+/>
 
-              <IoCameraOutline className="absolute right-[4vw] top-1/3 -transform tranlate-y-1/2 text-gray-500 text-2xl hover:cursor-pointer hover:text-gray-800 transition-all ease" />
+              <IoCameraOutline className="absolute right-[4vw] top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl hover:cursor-pointer hover:text-gray-800 transition-all ease" />
               <IoIosLink className="absolute right-5 top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl hover:cursor-pointer hover:text-gray-800 transition-all ease" />
             </div>
           </div>
@@ -203,19 +201,19 @@ function Home() {
           {/* posts  */}
           {posts.map((post, index) => {
             return (
-              <div className="border-2 mt-8 rounded-md">
+              <div className="pb-5 mt-8 rounded-xl shadow-md bg-white">
                 <div className="Profile flex gap-4 items-center p-2 ">
                   <img
                     src={post.pp}
                     alt=""
-                    className="rounded-full w-12 h-12 border-2 "
+                    className="rounded-full w-12 h-12 "
                   />
                   <p className="font-bold text-lg">{post.name}</p>
                 </div>
                 <div className="posts p-5">
-                  <img src={post.cover} alt="" className="rouned-md" />
+                  <img src={post.cover} alt="" className="rounded-md" />
                 </div>
-                <div className="bottom flex  justify-around items-center gap-5 mb-2">
+                <div className="bottom flex justify-around items-center gap-5 ">
                   <div className="w-[20vw] text-lg font-medium font-body ">
                     Starts from{" "}
                     <span className="font-semibold">{post.price}</span>
@@ -229,13 +227,13 @@ function Home() {
           })}
         </div>
         {/* rightbar opening  */}
-        <div className="rightbar w-1/3 h-1/2 rounded-xl shadow-xl">
+        <div className="rightbar w-1/4 h-1/2 rounded-xl drop-shadow-md bg-white">
           <h1 className="font-bold text-3xl p-5">Upskill Yourself</h1>
-          <div className="courses flex flex-wrap">
+          <div className="courses flex flex-wrap justify-center items-center">
             {courses.map((course, index) => {
               return (
-                <div className=" w-1/2 p-5">
-                  <div className="mb-5 bg-white rounded shadow-lg ">
+                <div className=" mb-5">
+                  <div className="mb-2 bg-white rounded shadow-lg ">
                     <iframe
                       className="rounded-xl"
                       width="100%"
