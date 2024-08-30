@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import pp1 from "./assets/person/1.jpeg";
 import { IoLogoInstagram } from "react-icons/io5";
 import { BiLogoLinkedin } from "react-icons/bi";
+import Navbar from "./navbar";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -55,6 +56,7 @@ const Profile = () => {
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-100 p-10">
       <div className="p-6 mx-auto bg-white shadow-md rounded-lg transition duration-500 hover:shadow-xl ">
         <div className="flex gap-20 items-center justify-center">

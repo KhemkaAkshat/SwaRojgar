@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './Home.jsx'
 import AdvancedEscrowDemo from "./EscrowAccount.jsx";
 import CustomerEscrowInterface from "./customerEscrow.jsx";
-import Profile from "./profile.jsx";
+import Profile from "./freelancerProfile.jsx";
 
 
 function App() {
