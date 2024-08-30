@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -7,65 +7,38 @@ import {
   Unlock,
   AlertTriangle,
   ExternalLink,
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+  MessageSquare,
+  RefreshCcw,
+} from "lucide-react";
 
 const CustomerEscrowInterface = () => {
   const [balance, setBalance] = useState(0);
-  const [status, setStatus] = useState('LOCKED');
-  const [amount, setAmount] = useState('');
-  const [releaseAmount, setReleaseAmount] = useState('');
+  const [status, setStatus] = useState("LOCKED");
+  const [amount, setAmount] = useState("");
+  const [releaseAmount, setReleaseAmount] = useState("");
   const [conflictRaised, setConflictRaised] = useState(false);
   const [resolutionProgress, setResolutionProgress] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
-  const navigate = useNavigate();
+  const [walletAddress, setWalletAddress] = useState("");
+  const [isMetaMaskOpen, setIsMetaMaskOpen] = useState(false);
+  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (conflictRaised && resolutionProgress < 100) {
-        setResolutionProgress((prev) => Math.min(prev + 10, 100));
-      }
-    }, 1000);
+    // Simulating wallet connection
+    setWalletAddress("0x1234...5678");
+  }, []);
 
-    return () => clearInterval(timer);
-  }, [conflictRaised, resolutionProgress]);
-
-  const handleDeposit = () => {
-    if (amount && !isNaN(amount)) {
-      const depositAmount = parseFloat(amount);
-      setBalance((prevBalance) => prevBalance + depositAmount);
-      setAmount('');
-      addTransaction('Deposit', depositAmount);
-    }
+  const handleVisitResolutionCenter = () => {
+    console.log("Navigating to Resolution Center");
+    // In a real app, you would use navigation here
   };
 
-  const handleRelease = () => {
-    if (releaseAmount && !isNaN(releaseAmount)) {
-      const releaseAmountValue = parseFloat(releaseAmount);
-      if (releaseAmountValue <= balance) {
-        setBalance((prevBalance) => prevBalance - releaseAmountValue);
-        setReleaseAmount('');
-        setStatus('RELEASED');
-        addTransaction('Funds Released', releaseAmountValue);
-      } else {
-        alert('Insufficient balance to release the specified amount.');
-      }
-    }
-  };
-
-  const handleRaiseConflict = () => {
-    setConflictRaised(true);
-    setStatus('DISPUTED');
-    addTransaction('Conflict Raised', 0);
-    setShowConflictDialog(false);
-  };
-
-  const handleResolveConflict = () => {
-    setConflictRaised(false);
-    setStatus('RESOLVED');
-    setResolutionProgress(0);
-    addTransaction('Conflict Resolved', 0);
+  const handleRefresh = () => {
+    setBalance((prevBalance) => prevBalance + Math.random() * 10);
+    addTransaction("Refresh", 0);
   };
 
   const addTransaction = (type, amount) => {
@@ -78,98 +51,284 @@ const CustomerEscrowInterface = () => {
     setTransactionHistory((prev) => [newTransaction, ...prev]);
   };
 
+  const handleDeposit = () => {
+    if (amount && !isNaN(amount)) {
+      const depositAmount = parseFloat(amount);
+      setBalance((prevBalance) => prevBalance + depositAmount);
+      setAmount("");
+      addTransaction("Deposit", depositAmount);
+    }
+  };
+
+  const handleRelease = () => {
+    if (releaseAmount && !isNaN(releaseAmount)) {
+      const releaseAmountValue = parseFloat(releaseAmount);
+      if (releaseAmountValue <= balance) {
+        setBalance((prevBalance) => prevBalance - releaseAmountValue);
+        setReleaseAmount("");
+        setStatus("RELEASED");
+        addTransaction("Funds Released", releaseAmountValue);
+      } else {
+        alert("Insufficient balance to release the specified amount.");
+      }
+    }
+  };
+
+  const handleRaiseConflict = () => {
+    setConflictRaised(true);
+    setStatus("DISPUTED");
+    addTransaction("Conflict Raised", 0);
+    setShowConflictDialog(false);
+  };
+
+  const handleResolveConflict = () => {
+    setConflictRaised(false);
+    setStatus("RESOLVED");
+    setResolutionProgress(0);
+    addTransaction("Conflict Resolved", 0);
+  };
+
+  const handleTransaction = () => {
+    if (recipientAddress && transferAmount && !isNaN(transferAmount)) {
+      const transferAmountValue = parseFloat(transferAmount);
+      if (transferAmountValue <= balance) {
+        setBalance((prevBalance) => prevBalance - transferAmountValue);
+        addTransaction("Transfer", transferAmountValue);
+        setTransferAmount("");
+        setRecipientAddress("");
+        setShowTransactionDialog(false);
+      } else {
+        alert("Insufficient balance for this transaction.");
+      }
+    } else {
+      alert("Please enter a valid wallet address and amount.");
+    }
+  };
+
   return (
-    <div className="p-4 max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
-      <div className="text-2xl font-bold text-center mb-6">
+    <div className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
+      <div className="text-3xl font-bold text-center mb-8 text-indigo-800">
         Customer Escrow Interface
       </div>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold">Escrowed Amount:</span>
-          <span className="text-xl font-bold">${balance.toFixed(2)}</span>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+          <span className="text-lg font-semibold text-gray-700">Wallet Address:</span>
+          <span className="text-xl font-bold text-indigo-600">
+            {walletAddress
+              ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(
+                  38
+                )}`
+              : "Not Connected"}
+          </span>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold">Status:</span>
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+          <span className="text-lg font-semibold text-gray-700">Escrowed Amount:</span>
+          <span className="text-2xl font-bold text-green-600">${balance.toFixed(2)}</span>
+        </div>
+
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+          <span className="text-lg font-semibold text-gray-700">Status:</span>
           <div className="flex items-center">
-            {status === 'LOCKED' && <Lock className="mr-2 text-yellow-500" />}
-            {status === 'RELEASED' && <Unlock className="mr-2 text-green-500" />}
-            {status === 'DISPUTED' && <AlertTriangle className="mr-2 text-red-500" />}
-            {status === 'RESOLVED' && <CheckCircle2 className="mr-2 text-blue-500" />}
-            <span className={`font-bold ${
-              status === 'LOCKED' ? 'text-yellow-500' :
-              status === 'RELEASED' ? 'text-green-500' :
-              status === 'DISPUTED' ? 'text-red-500' : 'text-blue-500'
-            }`}>
+            {status === "LOCKED" && <Lock className="mr-2 text-yellow-500" />}
+            {status === "RELEASED" && <Unlock className="mr-2 text-green-500" />}
+            {status === "DISPUTED" && (
+              <AlertTriangle className="mr-2 text-red-500" />
+            )}
+            {status === "RESOLVED" && (
+              <CheckCircle2 className="mr-2 text-blue-500" />
+            )}
+            <span
+              className={`font-bold text-lg ${
+                status === "LOCKED"
+                  ? "text-yellow-500"
+                  : status === "RELEASED"
+                  ? "text-green-500"
+                  : status === "DISPUTED"
+                  ? "text-red-500"
+                  : "text-blue-500"
+              }`}
+            >
               {status}
             </span>
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex bg-white p-2 rounded-lg shadow">
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Enter amount"
-            className="flex-grow p-2 border rounded-l-lg focus:outline-none"
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             onClick={handleDeposit}
-            className="bg-green-500 text-white px-4 py-2 rounded-r-lg"
+            className="bg-green-500 text-white px-6 py-2 rounded-r-lg hover:bg-green-600 transition duration-300"
           >
             <CreditCard className="mr-2 inline" size={16} />
             Deposit
           </button>
         </div>
 
-        <div className="flex mt-4">
+        <div className="flex bg-white p-2 rounded-lg shadow">
           <input
             type="number"
             value={releaseAmount}
             onChange={(e) => setReleaseAmount(e.target.value)}
             placeholder="Enter amount to release"
-            className="flex-grow p-2 border rounded-l-lg focus:outline-none"
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             onClick={handleRelease}
-            className="bg-blue-500 text-white px-4 py-2 rounded-r-lg disabled:opacity-50"
-            disabled={status !== 'LOCKED'}
+            className="bg-blue-500 text-white px-6 py-2 rounded-r-lg hover:bg-blue-600 transition duration-300"
           >
             <Unlock className="mr-2 inline" size={16} />
-            Release Funds
+            Release
           </button>
         </div>
 
-        <button
-          onClick={() => setShowConflictDialog(true)}
-          className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50 mt-4"
-          disabled={conflictRaised || status === 'RESOLVED'}
-        >
-          <AlertTriangle className="mr-2 inline" size={16} />
-          Raise Conflict
-        </button>
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={() => setShowConflictDialog(true)}
+            className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition duration-300"
+          >
+            <AlertCircle className="mr-2 inline" size={16} />
+            Raise Conflict
+          </button>
+          <button
+            onClick={handleResolveConflict}
+            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition duration-300"
+          >
+            <CheckCircle2 className="mr-2 inline" size={16} />
+            Resolve Conflict
+          </button>
+        </div>
+
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handleVisitResolutionCenter}
+            className="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition duration-300"
+          >
+            <MessageSquare className="mr-2 inline" size={16} />
+            Visit Resolution Center
+          </button>
+          <button
+            onClick={handleRefresh}
+            className="bg-indigo-500 text-white px-6 py-2 rounded-full hover:bg-indigo-600 transition duration-300"
+          >
+            <RefreshCcw className="mr-2 inline" size={16} />
+            Refresh Balance
+          </button>
+        </div>
+
+        {conflictRaised && (
+          <div className="mt-4 bg-red-100 p-4 rounded-lg shadow">
+            <div className="flex justify-between">
+              <span className="font-bold text-red-500">
+                Conflict Raised - Resolution in Progress...
+              </span>
+              <span>{resolutionProgress}%</span>
+            </div>
+            <div className="h-2 bg-red-200 mt-2 rounded">
+              <div
+                className="h-full bg-red-500 rounded transition-all duration-500 ease-in-out"
+                style={{ width: `${resolutionProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center mt-6 bg-white p-2 rounded-lg shadow">
+          <input
+            type="text"
+            value={recipientAddress}
+            onChange={(e) => setRecipientAddress(e.target.value)}
+            placeholder="Recipient Address"
+            className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            value={transferAmount}
+            onChange={(e) => setTransferAmount(e.target.value)}
+            placeholder="Amount"
+            className="flex-grow p-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button
+            onClick={() => setShowTransactionDialog(true)}
+            className="bg-orange-500 text-white px-6 py-2 rounded-r-lg hover:bg-orange-600 transition duration-300"
+          >
+            <ExternalLink className="mr-2 inline" size={16} />
+            Send
+          </button>
+        </div>
+
+        {transactionHistory.length > 0 && (
+          <div className="mt-6 bg-white p-4 rounded-lg shadow">
+            <h2 className="text-xl font-bold mb-4 text-indigo-800">Transaction History</h2>
+            <ul className="space-y-2">
+              {transactionHistory.map((transaction) => (
+                <li
+                  key={transaction.id}
+                  className="p-3 border-b last:border-b-0 hover:bg-gray-50 transition duration-300"
+                >
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-700">{transaction.type}</span>
+                    <span className="text-green-600">${transaction.amount.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {transaction.date}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {showConflictDialog && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg">
-              <h3 className="text-lg font-bold mb-4">
-                Are you sure you want to raise a conflict?
-              </h3>
-              <p className="mb-4">
-                This action will freeze the escrow account and initiate a dispute
-                resolution process.
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-bold mb-4 text-red-600">Raise Conflict</h2>
+              <p className="mb-4 text-gray-700">
+                Are you sure you want to raise a conflict? This action cannot be
+                undone.
               </p>
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end">
                 <button
                   onClick={() => setShowConflictDialog(false)}
-                  className="px-4 py-2 bg-gray-300 rounded"
+                  className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleRaiseConflict}
-                  className="px-4 py-2 bg-red-500 text-white rounded"
+                  className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300"
+                >
+                  Raise Conflict
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showTransactionDialog && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-bold mb-4 text-orange-600">Send Transaction</h2>
+              <p className="mb-4 text-gray-700">
+                Are you sure you want to send this transaction? This action will
+                be executed on the blockchain.
+              </p>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowTransactionDialog(false)}
+                  className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleTransaction}
+                  className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition duration-300"
                 >
                   Confirm
                 </button>
@@ -177,57 +336,6 @@ const CustomerEscrowInterface = () => {
             </div>
           </div>
         )}
-
-        {conflictRaised && (
-          <div className="mt-4">
-            <p className="mb-2 font-semibold">Conflict Resolution Progress:</p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div
-                className="bg-blue-600 h-2.5 rounded-full"
-                style={{ width: `${resolutionProgress}%` }}
-              ></div>
-            </div>
-            <p className="mt-2 text-sm text-gray-600">
-              {resolutionProgress}% Complete
-            </p>
-            {resolutionProgress === 100 && (
-              <button
-                onClick={handleResolveConflict}
-                className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-              >
-                Resolve Conflict
-              </button>
-            )}
-          </div>
-        )}
-
-        <button
-          className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded mt-4"
-          onClick={() => navigate('/resolution-center')}
-        >
-          <ExternalLink className="mr-2 inline" size={16} />
-          Visit Resolution Center
-        </button>
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Transaction History</h3>
-          <div className="max-h-40 overflow-y-auto">
-            {transactionHistory.map((transaction) => (
-              <div key={transaction.id} className="flex justify-between items-center py-2 border-b">
-                <span>{transaction.type}</span>
-                <span>${transaction.amount.toFixed(2)}</span>
-                <span className="text-sm text-gray-500">{transaction.date}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 p-3 bg-blue-100 rounded-md flex items-start">
-          <AlertCircle className="text-blue-500 mr-2 flex-shrink-0" size={20} />
-          <p className="text-sm text-blue-700">
-            This is a demo interface for customers. In a real escrow system, actions would be subject to strict verification processes and legal considerations.
-          </p>
-        </div>
       </div>
     </div>
   );
