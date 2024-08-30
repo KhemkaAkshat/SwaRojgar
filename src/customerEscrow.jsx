@@ -10,8 +10,15 @@ import {
   MessageSquare,
   RefreshCcw,
 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+
 
 const CustomerEscrowInterface = () => {
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/ResolutionCenter');
+  };
   const [balance, setBalance] = useState(0);
   const [status, setStatus] = useState("LOCKED");
   const [amount, setAmount] = useState("");
@@ -30,11 +37,11 @@ const CustomerEscrowInterface = () => {
     // Simulating wallet connection
     setWalletAddress("0x1234...5678");
   }, []);
-
   const handleVisitResolutionCenter = () => {
     console.log("Navigating to Resolution Center");
     // In a real app, you would use navigation here
   };
+
 
   const handleRefresh = () => {
     setBalance((prevBalance) => prevBalance + Math.random() * 10);
@@ -106,12 +113,14 @@ const CustomerEscrowInterface = () => {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
-      <div className="text-3xl font-bold text-center mb-8 text-indigo-800">
+
+    <div onClick={handleRedirect} className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
+      <div onClick={handleRedirect} className="text-3xl font-bold text-center mb-8 text-indigo-800">
         Customer Escrow Interface
       </div>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+      <div onClick={handleRedirect} className="space-y-6">
+        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+
           <span className="text-lg font-semibold text-gray-700">Wallet Address:</span>
           <span className="text-xl font-bold text-indigo-600">
             {walletAddress
@@ -120,16 +129,18 @@ const CustomerEscrowInterface = () => {
                 )}`
               : "Not Connected"}
           </span>
+
         </div>
 
-        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Escrowed Amount:</span>
           <span className="text-2xl font-bold text-green-600">${balance.toFixed(2)}</span>
         </div>
 
-        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Status:</span>
-          <div className="flex items-center">
+          <div onClick={handleRedirect} className="flex items-center">
+
             {status === "LOCKED" && <Lock className="mr-2 text-yellow-500" />}
             {status === "RELEASED" && <Unlock className="mr-2 text-green-500" />}
             {status === "DISPUTED" && (
@@ -154,7 +165,8 @@ const CustomerEscrowInterface = () => {
           </div>
         </div>
 
-        <div className="flex bg-white p-2 rounded-lg shadow">
+        <div onClick={handleRedirect} className="flex bg-white p-2 rounded-lg shadow">
+
           <input
             type="number"
             value={amount}
@@ -171,7 +183,8 @@ const CustomerEscrowInterface = () => {
           </button>
         </div>
 
-        <div className="flex bg-white p-2 rounded-lg shadow">
+        <div onClick={handleRedirect} className="flex bg-white p-2 rounded-lg shadow">
+
           <input
             type="number"
             value={releaseAmount}
@@ -185,10 +198,11 @@ const CustomerEscrowInterface = () => {
           >
             <Unlock className="mr-2 inline" size={16} />
             Release
+
           </button>
         </div>
 
-        <div className="flex justify-between mt-6">
+        <div onClick={handleRedirect} className="flex justify-between mt-6">
           <button
             onClick={() => setShowConflictDialog(true)}
             className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition duration-300"
@@ -205,7 +219,7 @@ const CustomerEscrowInterface = () => {
           </button>
         </div>
 
-        <div className="flex justify-between mt-6">
+        <div onClick={handleRedirect} className="flex justify-between mt-6">
           <button
             onClick={handleVisitResolutionCenter}
             className="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition duration-300"
@@ -223,23 +237,26 @@ const CustomerEscrowInterface = () => {
         </div>
 
         {conflictRaised && (
-          <div className="mt-4 bg-red-100 p-4 rounded-lg shadow">
-            <div className="flex justify-between">
+          <div onClick={handleRedirect} className="mt-4 bg-red-100 p-4 rounded-lg shadow">
+            <div onClick={handleRedirect} className="flex justify-between">
+
               <span className="font-bold text-red-500">
                 Conflict Raised - Resolution in Progress...
               </span>
               <span>{resolutionProgress}%</span>
             </div>
-            <div className="h-2 bg-red-200 mt-2 rounded">
-              <div
+            <div onClick={handleRedirect} className="h-2 bg-red-200 mt-2 rounded">
+              <div onClick={handleRedirect}
                 className="h-full bg-red-500 rounded transition-all duration-500 ease-in-out"
-                style={{ width: ${resolutionProgress}% }}
+                style={{ width: `${resolutionProgress}%` }}
+
               />
             </div>
           </div>
         )}
 
-        <div className="flex items-center mt-6 bg-white p-2 rounded-lg shadow">
+        <div onClick={handleRedirect} className="flex items-center mt-6 bg-white p-2 rounded-lg shadow">
+
           <input
             type="text"
             value={recipientAddress}
@@ -264,7 +281,9 @@ const CustomerEscrowInterface = () => {
         </div>
 
         {transactionHistory.length > 0 && (
-          <div className="mt-6 bg-white p-4 rounded-lg shadow">
+
+          <div onClick={handleRedirect} className="mt-6 bg-white p-4 rounded-lg shadow">
+
             <h2 className="text-xl font-bold mb-4 text-indigo-800">Transaction History</h2>
             <ul className="space-y-2">
               {transactionHistory.map((transaction) => (
@@ -272,11 +291,13 @@ const CustomerEscrowInterface = () => {
                   key={transaction.id}
                   className="p-3 border-b last:border-b-0 hover:bg-gray-50 transition duration-300"
                 >
-                  <div className="flex justify-between">
+
+                  <div onClick={handleRedirect} className="flex justify-between">
                     <span className="font-semibold text-gray-700">{transaction.type}</span>
                     <span className="text-green-600">${transaction.amount.toFixed(2)}</span>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div onClick={handleRedirect} className="text-xs text-gray-500">
+
                     {transaction.date}
                   </div>
                 </li>
@@ -286,14 +307,18 @@ const CustomerEscrowInterface = () => {
         )}
 
         {showConflictDialog && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+
+          <div onClick={handleRedirect} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div onClick={handleRedirect} className="bg-white p-6 rounded-lg shadow-lg w-96">
+
               <h2 className="text-xl font-bold mb-4 text-red-600">Raise Conflict</h2>
               <p className="mb-4 text-gray-700">
                 Are you sure you want to raise a conflict? This action cannot be
                 undone.
               </p>
-              <div className="flex justify-end">
+
+              <div onClick={handleRedirect} className="flex justify-end">
+
                 <button
                   onClick={() => setShowConflictDialog(false)}
                   className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
@@ -312,14 +337,18 @@ const CustomerEscrowInterface = () => {
         )}
 
         {showTransactionDialog && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+
+          <div onClick={handleRedirect} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div onClick={handleRedirect} className="bg-white p-6 rounded-lg shadow-lg w-96">
+
               <h2 className="text-xl font-bold mb-4 text-orange-600">Send Transaction</h2>
               <p className="mb-4 text-gray-700">
                 Are you sure you want to send this transaction? This action will
                 be executed on the blockchain.
               </p>
-              <div className="flex justify-end">
+
+              <div onClick={handleRedirect} className="flex justify-end">
+
                 <button
                   onClick={() => setShowTransactionDialog(false)}
                   className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
