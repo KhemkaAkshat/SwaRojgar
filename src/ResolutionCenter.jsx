@@ -20,14 +20,10 @@ const ResolutionCenter = () => {
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInput('');
-      
-      // Simulate Daisy's response
+
+      // Daisy's response based on input
+      const daisyResponse = getDaisyResponse(input);
       setTimeout(() => {
-        const daisyResponse = {
-          sender: 'Daisy', 
-          text: "Thanks for your message. I'm processing it and will get back to you shortly.",
-          timestamp: new Date().toLocaleTimeString(),
-        };
         setMessages((prevMessages) => [...prevMessages, daisyResponse]);
       }, 1000);
     }
@@ -37,6 +33,48 @@ const ResolutionCenter = () => {
     if (e.key === 'Enter') {
       e.preventDefault(); // Prevents new line on Enter key press
       handleSend();
+    }
+  };
+
+  const getDaisyResponse = (userInput) => {
+    const lowercasedInput = userInput.toLowerCase();
+
+    if (lowercasedInput.includes('help')) {
+      return {
+        sender: 'Daisy',
+        text: 'Here are some things you can ask me:\n- "Check my order status"\n- "Request a refund"\n- "Escalate my issue"\n- "Contact support"\n- "Help"',
+        timestamp: new Date().toLocaleTimeString(),
+      };
+    } else if (lowercasedInput.includes('status')) {
+      return {
+        sender: 'Daisy',
+        text: 'Please provide your order ID, and I will check the status for you.',
+        timestamp: new Date().toLocaleTimeString(),
+      };
+    } else if (lowercasedInput.includes('refund')) {
+      return {
+        sender: 'Daisy',
+        text: 'I have initiated a refund request. You will receive a confirmation email shortly.',
+        timestamp: new Date().toLocaleTimeString(),
+      };
+    } else if (lowercasedInput.includes('speed up')) {
+      return {
+        sender: 'Daisy',
+        text: 'Your issue has been escalated to our senior support team. You will be contacted within 24 hours.',
+        timestamp: new Date().toLocaleTimeString(),
+      };
+    } else if (lowercasedInput.includes('contact')) {
+      return {
+        sender: 'Daisy',
+        text: 'You can contact our support team directly at support@example.com or call 1-800-123-4567.',
+        timestamp: new Date().toLocaleTimeString(),
+      };
+    } else {
+      return {
+        sender: 'Daisy',
+        text: "Thanks for your message. I'm processing it and will get back to you shortly.",
+        timestamp: new Date().toLocaleTimeString(),
+      };
     }
   };
 
@@ -59,7 +97,7 @@ const ResolutionCenter = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown} // Added keydown handler
+          onKeyDown={handleKeyDown}
           placeholder="Type your message..."
           className="flex-grow p-3 border rounded-l-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />

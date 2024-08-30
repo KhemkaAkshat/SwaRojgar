@@ -1,9 +1,9 @@
-// Home.js
 import React from "react";
 import Navbar from "./navbar";
 import Leftbar from "./Leftbar";
 import Postbar from "./Postbar";
 import Rightbar from "./Rightbar";
+import AIComponent from "./Aicomponent";
 
 function Home() {
   return (
@@ -22,10 +22,11 @@ function Home() {
         {/* Rightbar */}
         <Rightbar />
       </div>
+
+      {/* AI Component */}
+      <AIComponent />
     </>
   );
 }
 
 export default Home;
-
-

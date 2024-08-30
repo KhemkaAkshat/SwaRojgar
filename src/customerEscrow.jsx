@@ -9,16 +9,14 @@ import {
   ExternalLink,
   MessageSquare,
   RefreshCcw,
+  LogIn,
+  LogOut,
 } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
+import Web3 from "web3";
 
 const CustomerEscrowInterface = () => {
   const navigate = useNavigate();
-
-  const handleRedirect = () => {
-    navigate('/ResolutionCenter');
-  };
   const [balance, setBalance] = useState(0);
   const [status, setStatus] = useState("LOCKED");
   const [amount, setAmount] = useState("");
@@ -28,20 +26,52 @@ const CustomerEscrowInterface = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
-  const [isMetaMaskOpen, setIsMetaMaskOpen] = useState(false);
-  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
+  const [web3, setWeb3] = useState(null);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    // Simulating wallet connection
-    setWalletAddress("0x1234...5678");
+    if (window.ethereum) {
+      const web3Instance = new Web3(window.ethereum);
+      setWeb3(web3Instance);
+
+      window.ethereum.request({ method: "eth_requestAccounts" })
+        .then((accounts) => {
+          setWalletAddress(accounts[0]);
+          setConnected(true);
+        })
+        .catch(console.error);
+    } else {
+      console.log("Please install MetaMask");
+    }
   }, []);
-  const handleVisitResolutionCenter = () => {
-    console.log("Navigating to Resolution Center");
-    // In a real app, you would use navigation here
+
+  const handleConnectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const web3Instance = new Web3(window.ethereum);
+        setWeb3(web3Instance);
+
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        setWalletAddress(accounts[0]);
+        setConnected(true);
+      } catch (error) {
+        console.error("Connection failed", error);
+      }
+    } else {
+      console.log("Please install MetaMask");
+    }
   };
 
+  const handleDisconnectWallet = () => {
+    setWalletAddress("");
+    setConnected(false);
+  };
+
+  const handleRedirect = () => {
+    navigate('/ResolutionCenter');
+  };
 
   const handleRefresh = () => {
     setBalance((prevBalance) => prevBalance + Math.random() * 10);
@@ -95,15 +125,23 @@ const CustomerEscrowInterface = () => {
     addTransaction("Conflict Resolved", 0);
   };
 
-  const handleTransaction = () => {
-    if (recipientAddress && transferAmount && !isNaN(transferAmount)) {
+  const handleTransaction = async () => {
+    if (web3 && recipientAddress && transferAmount && !isNaN(transferAmount)) {
       const transferAmountValue = parseFloat(transferAmount);
       if (transferAmountValue <= balance) {
-        setBalance((prevBalance) => prevBalance - transferAmountValue);
-        addTransaction("Transfer", transferAmountValue);
-        setTransferAmount("");
-        setRecipientAddress("");
-        setShowTransactionDialog(false);
+        try {
+          await web3.eth.sendTransaction({
+            from: walletAddress,
+            to: recipientAddress,
+            value: web3.utils.toWei(transferAmountValue.toString(), 'ether'),
+          });
+          setBalance((prevBalance) => prevBalance - transferAmountValue);
+          addTransaction("Transfer", transferAmountValue);
+          setTransferAmount("");
+          setRecipientAddress("");
+        } catch (error) {
+          console.error("Transaction failed", error);
+        }
       } else {
         alert("Insufficient balance for this transaction.");
       }
@@ -113,14 +151,35 @@ const CustomerEscrowInterface = () => {
   };
 
   return (
-
-    <div onClick={handleRedirect} className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
-      <div onClick={handleRedirect} className="text-3xl font-bold text-center mb-8 text-indigo-800">
+    <div className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
+      <div className="text-3xl font-bold text-center mb-8 text-indigo-800">
         Customer Escrow Interface
       </div>
-      <div onClick={handleRedirect} className="space-y-6">
-        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+      <div className="space-y-6">
+        {/* Wallet Connect / Disconnect */}
+        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow">
+          <button
+            onClick={connected ? handleDisconnectWallet : handleConnectWallet}
+            className={`px-6 py-2 rounded-lg text-white ${
+              connected ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+          >
+            {connected ? (
+              <>
+                <LogOut className="mr-2 inline" size={16} />
+                Disconnect Wallet
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 inline" size={16} />
+                Connect Wallet
+              </>
+            )}
+          </button>
+        </div>
 
+        {/* Original components */}
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Wallet Address:</span>
           <span className="text-xl font-bold text-indigo-600">
             {walletAddress
@@ -129,18 +188,16 @@ const CustomerEscrowInterface = () => {
                 )}`
               : "Not Connected"}
           </span>
-
         </div>
 
-        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Escrowed Amount:</span>
           <span className="text-2xl font-bold text-green-600">${balance.toFixed(2)}</span>
         </div>
 
-        <div onClick={handleRedirect} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
+        <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Status:</span>
-          <div onClick={handleRedirect} className="flex items-center">
-
+          <div className="flex items-center">
             {status === "LOCKED" && <Lock className="mr-2 text-yellow-500" />}
             {status === "RELEASED" && <Unlock className="mr-2 text-green-500" />}
             {status === "DISPUTED" && (
@@ -165,8 +222,7 @@ const CustomerEscrowInterface = () => {
           </div>
         </div>
 
-        <div onClick={handleRedirect} className="flex bg-white p-2 rounded-lg shadow">
-
+        <div className="flex bg-white p-2 rounded-lg shadow">
           <input
             type="number"
             value={amount}
@@ -183,8 +239,7 @@ const CustomerEscrowInterface = () => {
           </button>
         </div>
 
-        <div onClick={handleRedirect} className="flex bg-white p-2 rounded-lg shadow">
-
+        <div className="flex bg-white p-2 rounded-lg shadow">
           <input
             type="number"
             value={releaseAmount}
@@ -198,168 +253,88 @@ const CustomerEscrowInterface = () => {
           >
             <Unlock className="mr-2 inline" size={16} />
             Release
-
           </button>
         </div>
 
-        <div onClick={handleRedirect} className="flex justify-between mt-6">
+        <div className="flex bg-white p-2 rounded-lg shadow">
           <button
             onClick={() => setShowConflictDialog(true)}
-            className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition duration-300"
+            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition duration-300"
           >
-            <AlertCircle className="mr-2 inline" size={16} />
+            <AlertTriangle className="mr-2 inline" size={16} />
             Raise Conflict
           </button>
+
           <button
             onClick={handleResolveConflict}
-            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition duration-300"
+            className="ml-4 bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition duration-300"
           >
-            <CheckCircle2 className="mr-2 inline" size={16} />
+            <RefreshCcw className="mr-2 inline" size={16} />
             Resolve Conflict
           </button>
         </div>
 
-        <div onClick={handleRedirect} className="flex justify-between mt-6">
+        {/* Send Sepolia Transaction */}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Send Sepolia Transaction</h2>
+          <div className="mb-4">
+            <input
+              type="text"
+              value={recipientAddress}
+              onChange={(e) => setRecipientAddress(e.target.value)}
+              placeholder="Recipient Address"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="number"
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+              placeholder="Amount in ETH"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
           <button
-            onClick={handleVisitResolutionCenter}
-            className="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition duration-300"
+            onClick={handleTransaction}
+            className="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition duration-300"
           >
-            <MessageSquare className="mr-2 inline" size={16} />
-            Visit Resolution Center
-          </button>
-          <button
-            onClick={handleRefresh}
-            className="bg-indigo-500 text-white px-6 py-2 rounded-full hover:bg-indigo-600 transition duration-300"
-          >
-            <RefreshCcw className="mr-2 inline" size={16} />
-            Refresh Balance
+            Send Transaction
           </button>
         </div>
 
-        {conflictRaised && (
-          <div onClick={handleRedirect} className="mt-4 bg-red-100 p-4 rounded-lg shadow">
-            <div onClick={handleRedirect} className="flex justify-between">
-
-              <span className="font-bold text-red-500">
-                Conflict Raised - Resolution in Progress...
-              </span>
-              <span>{resolutionProgress}%</span>
-            </div>
-            <div onClick={handleRedirect} className="h-2 bg-red-200 mt-2 rounded">
-              <div onClick={handleRedirect}
-                className="h-full bg-red-500 rounded transition-all duration-500 ease-in-out"
-                style={{ width: `${resolutionProgress}%` }}
-
-              />
-            </div>
-          </div>
-        )}
-
-        <div onClick={handleRedirect} className="flex items-center mt-6 bg-white p-2 rounded-lg shadow">
-
-          <input
-            type="text"
-            value={recipientAddress}
-            onChange={(e) => setRecipientAddress(e.target.value)}
-            placeholder="Recipient Address"
-            className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <input
-            type="number"
-            value={transferAmount}
-            onChange={(e) => setTransferAmount(e.target.value)}
-            placeholder="Amount"
-            className="flex-grow p-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <button
-            onClick={() => setShowTransactionDialog(true)}
-            className="bg-orange-500 text-white px-6 py-2 rounded-r-lg hover:bg-orange-600 transition duration-300"
-          >
-            <ExternalLink className="mr-2 inline" size={16} />
-            Send
-          </button>
+        {/* Transaction History */}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Transaction History</h2>
+          <ul>
+            {transactionHistory.map((transaction) => (
+              <li key={transaction.id} className="border-b py-2">
+                <div className="text-gray-700">{transaction.type}</div>
+                <div className="text-gray-500 text-sm">{transaction.date}</div>
+                <div className="text-gray-800 font-bold">${transaction.amount.toFixed(2)}</div>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {transactionHistory.length > 0 && (
-
-          <div onClick={handleRedirect} className="mt-6 bg-white p-4 rounded-lg shadow">
-
-            <h2 className="text-xl font-bold mb-4 text-indigo-800">Transaction History</h2>
-            <ul className="space-y-2">
-              {transactionHistory.map((transaction) => (
-                <li
-                  key={transaction.id}
-                  className="p-3 border-b last:border-b-0 hover:bg-gray-50 transition duration-300"
-                >
-
-                  <div onClick={handleRedirect} className="flex justify-between">
-                    <span className="font-semibold text-gray-700">{transaction.type}</span>
-                    <span className="text-green-600">${transaction.amount.toFixed(2)}</span>
-                  </div>
-                  <div onClick={handleRedirect} className="text-xs text-gray-500">
-
-                    {transaction.date}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
+        {/* Conflict Dialog */}
         {showConflictDialog && (
-
-          <div onClick={handleRedirect} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div onClick={handleRedirect} className="bg-white p-6 rounded-lg shadow-lg w-96">
-
-              <h2 className="text-xl font-bold mb-4 text-red-600">Raise Conflict</h2>
-              <p className="mb-4 text-gray-700">
-                Are you sure you want to raise a conflict? This action cannot be
-                undone.
-              </p>
-
-              <div onClick={handleRedirect} className="flex justify-end">
-
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <h2 className="text-lg font-semibold mb-4">Raise a Conflict</h2>
+              <p className="mb-4">Are you sure you want to raise a conflict?</p>
+              <div className="flex justify-end">
                 <button
                   onClick={() => setShowConflictDialog(false)}
-                  className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
+                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleRaiseConflict}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300"
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
                 >
                   Raise Conflict
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showTransactionDialog && (
-
-          <div onClick={handleRedirect} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div onClick={handleRedirect} className="bg-white p-6 rounded-lg shadow-lg w-96">
-
-              <h2 className="text-xl font-bold mb-4 text-orange-600">Send Transaction</h2>
-              <p className="mb-4 text-gray-700">
-                Are you sure you want to send this transaction? This action will
-                be executed on the blockchain.
-              </p>
-
-              <div onClick={handleRedirect} className="flex justify-end">
-
-                <button
-                  onClick={() => setShowTransactionDialog(false)}
-                  className="bg-gray-300 text-black px-4 py-2 rounded-full mr-2 hover:bg-gray-400 transition duration-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleTransaction}
-                  className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition duration-300"
-                >
-                  Confirm
                 </button>
               </div>
             </div>
