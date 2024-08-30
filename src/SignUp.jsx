@@ -15,6 +15,7 @@ function SignUp() {
         email: "",
         password: "",
         phoneNumber: "",
+        userType: "client", // default value
     });
 
     // Handle input changes
@@ -103,6 +104,33 @@ function SignUp() {
                             onChange={handleChange}
                             className="w-full md:w-3/4 mt-4 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
                         />
+                        
+                        {/* Radio buttons for user type selection */}
+                        <div className="flex items-center gap-4 mt-4 w-full md:w-3/4">
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="userType"
+                                    value="client"
+                                    checked={formData.userType === "client"}
+                                    onChange={handleChange}
+                                    className="mr-2"
+                                />
+                                Are you a client
+                            </label>
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="userType"
+                                    value="freelancer"
+                                    checked={formData.userType === "freelancer"}
+                                    onChange={handleChange}
+                                    className="mr-2 color:"
+                                />
+                                Are you a freelancer
+                            </label>
+                        </div>
+
                         <button
                             type="submit"
                             className="w-full md:w-3/4 mt-6 p-4 rounded-lg bg-purple-500 hover:bg-purple-600 transition-all duration-300 transform hover:scale-105 text-white font-bold"

@@ -7,6 +7,8 @@ import Home from './Home.jsx'
 import AdvancedEscrowDemo from "./EscrowAccount.jsx";
 import CustomerEscrowInterface from "./customerEscrow.jsx";
 import ResolutionCenter from "./ResolutionCenter.jsx";
+import Profile from "./freelancerProfile.jsx";
+import ClientProfile from "./clientProfile.jsx";
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path="/signup" element={<SignUp />} /> 
         <Route path="/Login" element={<Login />} /> 
+        <Route path="/profile" element={<Profile />} /> 
+        <Route path="/clientprofile" element={<ClientProfile />} /> 
       </Routes>
     </Router>
   );

@@ -36,7 +36,7 @@ function Login() {
   };
 
   return (
-    <div className="m-[5vw] w-[90vw] max-w-[1200px] flex justify-center items-center border-2 p-[2vw] rounded-3xl bg-gradient-to-r from-purple-300 to-blue-300 shadow-lg transition-all duration-500 ease-in-out transform ">
+    <div className="m-[5vw] ml-[10vw] w-[90vw] max-w-[1200px] flex justify-center items-center border-2 p-[2vw] rounded-3xl bg-gradient-to-r from-purple-300 to-blue-300 shadow-lg transition-all duration-500 ease-in-out transform ">
       {/* Image section */}
       <div className="hidden md:block w-1/2 p-5">
         <img src={loginImage} alt="Login Page" className="w-full rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-500" />
@@ -88,6 +88,7 @@ function Login() {
           </button>
         </div>
       </div>
+      
     </div>
   );
 }
