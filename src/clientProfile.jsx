@@ -58,25 +58,25 @@ function ClientProfile() {
     <div className="min-h-screen bg-gray-100 p-10">
       <div className="p-6 mx-auto bg-white shadow-md rounded-lg transition duration-500 hover:shadow-xl ">
         <div className="flex gap-20 items-center justify-center">
-          <div className="w-1/4 h-screen p-4 bg-blue-500 text-white rounded-lg">
+          <div className="w-1/4 h-screen p-4 bg-gradient-to-r from-[#cd97e1] to-white-300 text-white rounded-lg">
             <div className="text-center mb-4">
               <img
                 src={pp1}
                 alt="Profile"
                 className="w-40 h-40 rounded-full my-10 mx-auto"
               />
-              <h2 className="mt-4 text-3xl font-bold">Mr. Gaurav Patil</h2>
+              <h2 className="mt-4 text-3xl font-bold text-gray-700">Mr. Gaurav Patil</h2>
             </div>
-            <div className="text-sm p-[2vw] pt-4">
+            <div className="text-sm p-[2vw] pt-4 text-gray-700">
               <p className="mb-5">6 Churchgate, Mumbai</p>
               <p className="mb-5">Rahul.tiwari@gmail.com</p>
               <p className="mb-5">Cell: +91 82989349</p>
             </div>
             <div>
-              <h5 className="font-semibold text-3xl pl-[2vw]">
+              <h5 className="font-semibold text-3xl pl-[2vw] text-gray-700">
                 Preferred Freelancers
               </h5>
-              <div className="text-md p-[2vw] pt-4">
+              <div className="text-md p-[2vw] pt-4 text-gray-700">
                 <ul className="list-disc list-inside">
                   <li className="mb-5">Web Developer</li>
                   <li className="mb-5">Graphic Designer</li>
@@ -84,7 +84,7 @@ function ClientProfile() {
                 </ul>
               </div>
             </div>
-            <div className="flex justify-start gap-5 px-6">
+            <div className="flex justify-start -mt-6 gap-5 px-6 text-gray-700">
               <IoLogoInstagram className="text-2xl hover:cursor-pointer hover:text-green-500 transition-all ease" />
               <BiLogoLinkedin className="text-2xl hover:cursor-pointer hover:text-green-500 transition-all ease" />
             </div>
