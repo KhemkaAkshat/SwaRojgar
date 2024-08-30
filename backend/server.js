@@ -48,6 +48,24 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+app.post('/login',async(req,res)=>{
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email, password });
+
+        if (user) {
+            res.status(200).json({ message: 'Login successful' });
+            console.log("LOGIN SUCCESSFUL");
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
+            console.log("LOGIN FAILED");
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({ message: 'Error during login', error });
+    }
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
