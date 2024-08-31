@@ -36,7 +36,7 @@ app.post('/signup', async (req, res) => {
         email,
         phoneNumber,
         password,
-        userType // Ensure this field is passed correctly
+        userType // Ensure this field is passed correctliy
     });
 
     try {
