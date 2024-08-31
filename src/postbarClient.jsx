@@ -43,7 +43,7 @@ function Postbar() {
               Starts from <span className="font-semibold">{post.price}</span>
             </div>
             {/* Changed button text to "Hire" */}
-            <button className="bg-green-700 font-semibold p-3 px-5 text-white rounded-xl hover:bg-green-900 transition-all ease">
+            <button className="bg-red-500 font-semibold p-3 px-5 text-white rounded-xl hover:bg-red-900 transition-all ease">
               Hire
             </button>
           </div>

@@ -16,7 +16,7 @@ function Leftbar() {
             <IoMdStar className="m-1 text-yellow-500 animate-pulse" />
           </h2>
 
-          <div className="flex p-2  justify-around gap-2 bg-emerald-900 rounded-2xl">
+          <div className="flex p-2  justify-around gap-2 bg-purple-400 rounded-2xl">
             <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
               <div
                 className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
