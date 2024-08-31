@@ -19,14 +19,14 @@ function Leftbar() {
           <IoMdStar className="m-1 text-yellow-500 animate-pulse" />
         </h2>
 
-        <div className="flex p-2 justify-around gap-2 bg-emerald-900 rounded-2xl">
-          <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
-            <div
-              className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{
-                background: `radial-gradient(circle at center, rgba(128, 0, 128, 0.2) 0%, transparent 60%)`,
-              }}
-            ></div>
+          <div className="flex p-2  justify-around gap-2 bg-purple-400 rounded-2xl">
+            <div className="w-[7vw] p-2 rounded-xl shadow-xl bg-white transition-all duration-300 relative overflow-hidden group">
+              <div
+                className="absolute inset-0 bg-white rounded-xl group-hover:bg-gradient-to-r from-transparent to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: `radial-gradient(circle at center, rgba(128, 0, 128, 0.2) 0%, transparent 60%)`,
+                }}
+              ></div>
 
             <MdOutlineOndemandVideo className="text-4xl ml-2 mt-3 mb-6 text-gray-700 transition-colors duration-300 relative z-10" />
             <h4 className="font-semibold mb-1 text-gray-800 transition-colors duration-300 relative z-10">
