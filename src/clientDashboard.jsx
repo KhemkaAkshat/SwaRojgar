@@ -1,10 +1,10 @@
 import React from "react";
 import Navbar from "./navbar";
 import Leftbar from "./Leftbar";
-import Postbar from "./Postbar";
-import Rightbar from "./Rightbar";
+import Postbar from "./postbarClient";
+import Rightbar from "./rightbarClient";
 
-function Home() {
+function ClientDashboard() {
   return (
     <>
       {/* Navbar Opening */}
@@ -27,4 +27,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default ClientDashboard;

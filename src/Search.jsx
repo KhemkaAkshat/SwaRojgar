@@ -1,11 +1,20 @@
 import React from 'react'
 
-function search() {
+function Search() {
   return (
     <div>
-      
+      <div>
+        {/* {navbar} */}
+      </div>
+      <div>
+        {/* main page  */}
+      </div>
+      <div>
+        {/* footer */}
+        footer
+      </div>
     </div>
   )
 }
 
-export default search
+export default Search
