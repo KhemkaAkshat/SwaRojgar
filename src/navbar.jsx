@@ -10,6 +10,10 @@ function Navbar() {
   const [ordersDropdownOpen, setOrdersDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleSearchClick = () => {
+    navigate("/search");
+  };
+
   return (
     <div className="pt-4 px-6 flex justify-between items-center">
       {/* Logo */}
@@ -24,7 +28,10 @@ function Navbar() {
           className="text-md border border-gray-300 p-2 w-[30vw] rounded-l-md focus:outline-none focus:border-purple-400"
           placeholder="Search what you need"
         />
-        <button className="p-2 bg-purple-400 text-white rounded-r-md" onClick={navigate("/search")}>
+        <button 
+          className="p-2 bg-purple-400 text-white rounded-r-md"
+          onClick={handleSearchClick} // Update to handleSearchClick
+        >
           <IoSearch className="text-xl w-[3vw] hover:scale-125 transition-all ease" />
         </button>
       </div>
