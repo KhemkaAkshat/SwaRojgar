@@ -24,7 +24,6 @@ const CustomerEscrowInterface = () => {
   const [conflictRaised, setConflictRaised] = useState(false);
   const [resolutionProgress, setResolutionProgress] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
-  const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
@@ -35,13 +34,6 @@ const CustomerEscrowInterface = () => {
     if (window.ethereum) {
       const web3Instance = new Web3(window.ethereum);
       setWeb3(web3Instance);
-
-      window.ethereum.request({ method: "eth_requestAccounts" })
-        .then((accounts) => {
-          setWalletAddress(accounts[0]);
-          setConnected(true);
-        })
-        .catch(console.error);
     } else {
       console.log("Please install MetaMask");
     }
@@ -50,9 +42,6 @@ const CustomerEscrowInterface = () => {
   const handleConnectWallet = async () => {
     if (window.ethereum) {
       try {
-        const web3Instance = new Web3(window.ethereum);
-        setWeb3(web3Instance);
-
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setWalletAddress(accounts[0]);
         setConnected(true);
@@ -67,10 +56,11 @@ const CustomerEscrowInterface = () => {
   const handleDisconnectWallet = () => {
     setWalletAddress("");
     setConnected(false);
+    setWeb3(null);  // Reset the Web3 instance to force a reconnect
   };
 
   const handleRedirect = () => {
-    navigate('/ResolutionCenter');
+    navigate("/ResolutionCenter");
   };
 
   const handleRefresh = () => {
@@ -115,14 +105,18 @@ const CustomerEscrowInterface = () => {
     setConflictRaised(true);
     setStatus("DISPUTED");
     addTransaction("Conflict Raised", 0);
-    setShowConflictDialog(false);
-  };
 
-  const handleResolveConflict = () => {
-    setConflictRaised(false);
-    setStatus("RESOLVED");
-    setResolutionProgress(0);
-    addTransaction("Conflict Resolved", 0);
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 1;
+      setResolutionProgress(progress);
+      if (progress >= 100) {
+        clearInterval(interval);
+        setConflictRaised(false);
+        setStatus("RESOLVED");
+        setResolutionProgress(0);
+      }
+    }, 100);
   };
 
   const handleTransaction = async () => {
@@ -133,7 +127,7 @@ const CustomerEscrowInterface = () => {
           await web3.eth.sendTransaction({
             from: walletAddress,
             to: recipientAddress,
-            value: web3.utils.toWei(transferAmountValue.toString(), 'ether'),
+            value: web3.utils.toWei(transferAmountValue.toString(), "ether"),
           });
           setBalance((prevBalance) => prevBalance - transferAmountValue);
           addTransaction("Transfer", transferAmountValue);
@@ -150,6 +144,12 @@ const CustomerEscrowInterface = () => {
     }
   };
 
+  const getProgressBarColor = () => {
+    if (resolutionProgress < 33) return "bg-red-500";
+    if (resolutionProgress < 66) return "bg-yellow-500";
+    return "bg-green-500";
+  };
+
   return (
     <div className="p-6 max-w-2xl mx-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-lg rounded-lg">
       <div className="text-3xl font-bold text-center mb-8 text-indigo-800">
@@ -161,7 +161,7 @@ const CustomerEscrowInterface = () => {
           <button
             onClick={connected ? handleDisconnectWallet : handleConnectWallet}
             className={`px-6 py-2 rounded-lg text-white ${
-              connected ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
+              connected ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
             {connected ? (
@@ -178,7 +178,7 @@ const CustomerEscrowInterface = () => {
           </button>
         </div>
 
-        {/* Original components */}
+        {/* Wallet and Balance Info */}
         <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Wallet Address:</span>
           <span className="text-xl font-bold text-indigo-600">
@@ -192,7 +192,7 @@ const CustomerEscrowInterface = () => {
 
         <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
           <span className="text-lg font-semibold text-gray-700">Escrowed Amount:</span>
-          <span className="text-2xl font-bold text-green-600">${balance.toFixed(2)}</span>
+          <span className="text-2xl font-bold text-green-600">₹{balance.toFixed(2)}</span>
         </div>
 
         <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
@@ -222,12 +222,33 @@ const CustomerEscrowInterface = () => {
           </div>
         </div>
 
+        {/* Raise Conflict Button */}
+        <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow">
+          <button
+            onClick={handleRaiseConflict}
+            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+          >
+            Raise Conflict
+          </button>
+
+          {/* Progress Bar */}
+          {conflictRaised && (
+            <div className="w-full bg-gray-200 rounded-full mt-4">
+              <div
+                className={`h-2 rounded-full ${getProgressBarColor()} transition-width duration-1000`}
+                style={{ width: `${resolutionProgress}%` }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Deposit and Release Forms */}
         <div className="flex bg-white p-2 rounded-lg shadow">
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter amount"
+            placeholder="Enter amount to deposit"
             className="flex-grow p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
@@ -251,95 +272,65 @@ const CustomerEscrowInterface = () => {
             onClick={handleRelease}
             className="bg-blue-500 text-white px-6 py-2 rounded-r-lg hover:bg-blue-600 transition duration-300"
           >
-            <Unlock className="mr-2 inline" size={16} />
             Release
-          </button>
-        </div>
-
-        <div className="flex bg-white p-2 rounded-lg shadow">
-          <button
-            onClick={() => setShowConflictDialog(true)}
-            className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition duration-300"
-          >
-            <AlertTriangle className="mr-2 inline" size={16} />
-            Raise Conflict
-          </button>
-
-          <button
-            onClick={handleResolveConflict}
-            className="ml-4 bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition duration-300"
-          >
-            <RefreshCcw className="mr-2 inline" size={16} />
-            Resolve Conflict
-          </button>
-        </div>
-
-        {/* Send Sepolia Transaction */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Send Sepolia Transaction</h2>
-          <div className="mb-4">
-            <input
-              type="text"
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-              placeholder="Recipient Address"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="number"
-              value={transferAmount}
-              onChange={(e) => setTransferAmount(e.target.value)}
-              placeholder="Amount in ETH"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <button
-            onClick={handleTransaction}
-            className="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition duration-300"
-          >
-            Send Transaction
           </button>
         </div>
 
         {/* Transaction History */}
         <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Transaction History</h2>
-          <ul>
-            {transactionHistory.map((transaction) => (
-              <li key={transaction.id} className="border-b py-2">
-                <div className="text-gray-700">{transaction.type}</div>
-                <div className="text-gray-500 text-sm">{transaction.date}</div>
-                <div className="text-gray-800 font-bold">${transaction.amount.toFixed(2)}</div>
+          <h3 className="text-lg font-semibold mb-2">Transaction History</h3>
+          <ul className="space-y-2">
+            {transactionHistory.map((txn) => (
+              <li key={txn.id} className="flex justify-between">
+                <span className="text-gray-700">{txn.type}</span>
+                <span className="text-gray-500">{txn.date}</span>
+                <span
+                  className={`font-bold ${
+                    txn.type.includes("Released")
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  ₹{txn.amount.toFixed(2)}
+                </span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Conflict Dialog */}
-        {showConflictDialog && (
-          <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-              <h2 className="text-lg font-semibold mb-4">Raise a Conflict</h2>
-              <p className="mb-4">Are you sure you want to raise a conflict?</p>
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setShowConflictDialog(false)}
-                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleRaiseConflict}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                >
-                  Raise Conflict
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Transaction Form */}
+        <div className="flex flex-col bg-white p-4 rounded-lg shadow space-y-4">
+          <input
+            type="text"
+            value={recipientAddress}
+            onChange={(e) => setRecipientAddress(e.target.value)}
+            placeholder="Recipient Address"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            value={transferAmount}
+            onChange={(e) => setTransferAmount(e.target.value)}
+            placeholder="Amount to Transfer"
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button
+            onClick={handleTransaction}
+            className="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition duration-300"
+          >
+            Transfer
+          </button>
+        </div>
+
+        {/* Redirect Button */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleRedirect}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+          >
+            Go to Resolution Center
+          </button>
+        </div>
       </div>
     </div>
   );

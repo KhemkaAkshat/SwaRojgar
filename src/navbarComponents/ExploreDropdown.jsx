@@ -17,6 +17,10 @@ function ExploreDropdown({ dropdownOpen, setDropdownOpen }) {
     setLocalGigsToShow(localGigsToShow + 3); // Show 3 more local gigs each time "see more" is clicked
   };
 
+  const handleLinkClick = (e) => {
+    e.preventDefault(); // Prevent default action to avoid navigating away
+  };
+
   return (
     <div className="relative">
       <button
@@ -40,7 +44,7 @@ function ExploreDropdown({ dropdownOpen, setDropdownOpen }) {
             {/* Render the first 'trendingGigsToShow' gigs from TrendingGigs */}
             {TrendingGigs.slice(0, trendingGigsToShow).map((gig, index) => (
               <li key={index}>
-                <a href="#" className="block hover:bg-gray-100 p-2 rounded-md">
+                <a href="#" className="block hover:bg-gray-100 p-2 rounded-md" onClick={handleLinkClick}>
                   {gig.name}
                 </a>
               </li>
@@ -64,7 +68,7 @@ function ExploreDropdown({ dropdownOpen, setDropdownOpen }) {
               {/* Render the first 'localGigsToShow' gigs from LocalGigs */}
               {LocalGigs.slice(0, localGigsToShow).map((gig, index) => (
                 <li key={index}>
-                  <a href="#" className="block hover:bg-gray-100 p-2 rounded-md">
+                  <a href="#" className="block hover:bg-gray-100 p-2 rounded-md" onClick={handleLinkClick}>
                     {gig.name}
                   </a>
                 </li>
