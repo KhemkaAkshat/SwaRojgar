@@ -26,8 +26,8 @@ mongoose.connect(MONGODB_URI)
 
 // Signup route
 app.post('/signup', async (req, res) => {
-    // Destructure fields from req.body
-    const { firstName, lastName, email, phoneNumber, password } = req.body;
+    // Destructure fields from req.body, including userType
+    const { firstName, lastName, email, phoneNumber, password, userType } = req.body;
 
     // Create a new User instance
     const newUser = new User({
@@ -35,7 +35,8 @@ app.post('/signup', async (req, res) => {
         lastName,
         email,
         phoneNumber,
-        password
+        password,
+        userType // Ensure this field is passed correctly
     });
 
     try {
@@ -48,13 +49,18 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.post('/login',async(req,res)=>{
+
+// Login route
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email, password });
 
         if (user) {
-            res.status(200).json({ message: 'Login successful' });
+            res.status(200).json({ 
+                message: 'Login successful', 
+                userType: user.userType 
+            });
             console.log("LOGIN SUCCESSFUL");
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -65,6 +71,7 @@ app.post('/login',async(req,res)=>{
         res.status(500).json({ message: 'Error during login', error });
     }
 });
+
 
 // Start the server
 app.listen(PORT, () => {

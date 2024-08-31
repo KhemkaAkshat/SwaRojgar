@@ -1,16 +1,19 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the User model
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    phoneNumber: { type: String, required: true },
     password: { type: String, required: true },
-    phoneNumber: { type: String, required: true }
+    userType: { 
+        type: String, 
+        required: true, 
+        enum: ['client', 'freelancer'], 
+        default: 'client' 
+    }
 });
 
-// Create the model from the schema
 const User = mongoose.model('User', userSchema);
 
-// Export the model for use in other files
 module.exports = User;
