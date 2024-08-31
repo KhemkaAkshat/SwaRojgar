@@ -20,11 +20,15 @@ function Login() {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful:", data);
-        navigate("/"); // Navigate to home page after successful login
+        if (data.userType === 'client') {
+          navigate("/client-dashboard");
+        } else if (data.userType === 'freelancer') {
+          navigate("/freelancer-dashboard");
+        }
       } else {
         console.error("Login failed:", data.message);
         alert("Invalid email or password.");
@@ -34,6 +38,7 @@ function Login() {
       alert("An error occurred during login.");
     }
   };
+  
 
   return (
     <div className="m-[5vw] ml-[10vw] w-[90vw] max-w-[1200px] flex justify-center items-center border-2 p-[2vw] rounded-3xl bg-gradient-to-r from-purple-300 to-blue-300 shadow-lg transition-all duration-500 ease-in-out transform ">

@@ -7,24 +7,19 @@ import { FaMeta } from "react-icons/fa6";
 
 function SignUp() {
     const navigate = useNavigate();
-    
-    // State to hold form data
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
         phoneNumber: "",
-        userType: "client", // default value
+        userType: "client",
     });
-
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -39,7 +34,7 @@ function SignUp() {
             const data = await response.json();
             if (response.ok) {
                 console.log("User registered:", data);
-                navigate("/"); // Navigate to home or another page after successful signup
+                navigate("/"); 
             } else {
                 console.error("Registration error:", data);
             }
