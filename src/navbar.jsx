@@ -24,7 +24,7 @@ function Navbar() {
           className="text-md border border-gray-300 p-2 w-[30vw] rounded-l-md focus:outline-none focus:border-purple-400"
           placeholder="Search what you need"
         />
-        <button className="p-2 bg-purple-400 text-white rounded-r-md">
+        <button className="p-2 bg-purple-400 text-white rounded-r-md" onClick={navigate("/search")}>
           <IoSearch className="text-xl w-[3vw] hover:scale-125 transition-all ease" />
         </button>
       </div>
