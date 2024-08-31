@@ -15,6 +15,7 @@ function SignUp() {
         phoneNumber: "",
         userType: "client",
     });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -34,7 +35,13 @@ function SignUp() {
             const data = await response.json();
             if (response.ok) {
                 console.log("User registered:", data);
-                navigate("/"); 
+
+                // Navigate to the correct dashboard based on userType
+                if (formData.userType === "client") {
+                    navigate("/client-dashboard");
+                } else if (formData.userType === "freelancer") {
+                    navigate("/freelancer-dashboard");
+                }
             } else {
                 console.error("Registration error:", data);
             }
@@ -120,7 +127,7 @@ function SignUp() {
                                     value="freelancer"
                                     checked={formData.userType === "freelancer"}
                                     onChange={handleChange}
-                                    className="mr-2 color:"
+                                    className="mr-2"
                                 />
                                 Are you a freelancer
                             </label>
