@@ -74,15 +74,15 @@ const MapComponent = () => {
   return (
     <div>
       <h1>Find Local Gig Workers</h1>
-      <div>
-        <label htmlFor="latitude">Latitude:</label>
+      <div className=''>
+        <label htmlFor="latitude">Lati: </label>
         <input type="text" id="latitude" placeholder="Enter latitude" />
-        <label htmlFor="longitude">Longitude:</label>
+        <label htmlFor="longitude">Longi: </label>
         <input type="text" id="longitude" placeholder="Enter longitude" />
-        <button onClick={handleLocateByLatLng}>Locate by Coordinates</button>
+        <button className='p-2 bg-purple-400' onClick={handleLocateByLatLng}>Locate by Coordinates</button>
       </div>
       <MapContainer
-        style={{ height: '500px', width: '100%' }}
+        style={{ height: '200px', width: '100%' }}
         center={userLocation || [51.505, -0.09]}
         zoom={13}
         scrollWheelZoom={false}
