@@ -27,7 +27,7 @@ function Login() {
         if (data.userType === 'client') {
           navigate("/client-dashboard");
         } else if (data.userType === 'freelancer') {
-          navigate("/freelancer-dashboard");
+          navigate("/");
         }
       } else {
         console.error("Login failed:", data.message);

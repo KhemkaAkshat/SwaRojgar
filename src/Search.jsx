@@ -43,8 +43,17 @@ const SearchResults = ({ results }) => {
 // Main SearchPage Component
 const SearchPage = () => {
   const [results, setResults] = useState([
-    { title: 'Web Developer', description: 'Build modern websites.', price: 500 },
-    { title: 'Graphic Designer', description: 'Create stunning graphics.', price: 300 },
+    { title: 'SEO Specialist', description: 'Optimize websites for search engines.', price: 400 },
+    { title: 'Content Writer', description: 'Craft engaging content for blogs and websites.', price: 200 },
+    { title: 'App Developer', description: 'Develop modern mobile applications.', price: 700 },
+    { title: 'Video Editor', description: 'Edit and produce professional videos.', price: 350 },
+    { title: 'Digital Marketer', description: 'Promote brands through digital channels.', price: 450 },
+    { title: 'UI/UX Designer', description: 'Design user-friendly interfaces.', price: 550 },
+    { title: 'Social Media Manager', description: 'Manage and grow social media presence.', price: 300 },
+    { title: 'Data Analyst', description: 'Analyze data and provide insights.', price: 600 },
+    { title: 'Copywriter', description: 'Write persuasive and effective copy.', price: 250 },
+    { title: 'Brand Strategist', description: 'Develop brand strategies and identities.', price: 650 }
+    
     // Add more mock results as needed
   ]);
 

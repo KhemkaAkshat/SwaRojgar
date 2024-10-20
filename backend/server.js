@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
-const User = require('./models/User');
 const Post = require('./models/Post');
 const postRoutes = require('./routes/posts');
 
@@ -37,6 +36,8 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname)); // Save images with a timestamp to avoid overwriting
     }
 });
+
+const User = require('./models/User');
 
 const upload = multer({ storage: storage });
 
