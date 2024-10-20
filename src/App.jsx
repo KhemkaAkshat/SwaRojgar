@@ -16,10 +16,13 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* made this as the first page  */}
+      <Route path="/" element={<Home />} />
         <Route path="/custescrow" element={<CustomerEscrowInterface />} />
         <Route path="/escrow" element={<AdvancedEscrowDemo />} />
         <Route path="/ResolutionCenter" element={<ResolutionCenter />} />
-        <Route path="/freelancer-dashboard" element={<Home />} />
+        
+        {/* <Route path="/freelancer-dashboard" element={<Home />} /> */}
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />

@@ -40,7 +40,8 @@ function SignUp() {
                 if (formData.userType === "client") {
                     navigate("/client-dashboard");
                 } else if (formData.userType === "freelancer") {
-                    navigate("/freelancer-dashboard");
+                    // navigate("/freelancer-dashboard");
+                    navigate("/");
                 }
             } else {
                 console.error("Registration error:", data);

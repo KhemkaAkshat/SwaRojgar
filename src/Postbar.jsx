@@ -41,16 +41,22 @@ function Postbar() {
       {posts.length > 0 ? (
         posts.map((post) => (
           <div key={post._id} className="pb-5 mt-8 rounded-xl shadow-md bg-white">
-            <div className="Profile flex gap-4 items-center p-2 ">
-              <img src="/path/to/profile/image" alt="" className="rounded-full w-12 h-12 " />
+            <div className="Profile flex gap-4 items-center p-2">
+              <img src="/path/to/profile/image" alt="" className="rounded-full w-12 h-12" />
               <p className="font-bold text-lg">{post.userId ? post.userId : "Unknown User"}</p>
             </div>
             <div className="posts p-5">
-              <p className="font-bold">{post.title}</p>
-              <p>{post.content}</p>
-              {post.image && <img src={`http://localhost:5010/${post.image}`} alt={post.title} className="w-full h-auto mt-2 rounded" />} {/* Display the image */}
+              <p className="font-bold">{post.title}</p> {/* Title displayed here */}
+              <p>{post.content}</p> {/* Content displayed here */}
+              {post.image && (
+                <img
+                  src={`http://localhost:5010${post.image}`} // Image path
+                  alt={post.title}
+                  className="w-full h-auto mt-2 rounded"
+                />
+              )}
             </div>
-            <div className="bottom flex justify-around items-center gap-5 ">
+            <div className="bottom flex justify-around items-center gap-5">
               <button className="bg-red-500 font-semibold p-3 px-5 text-white rounded-xl hover:bg-red-900 transition-all ease">
                 Apply
               </button>
